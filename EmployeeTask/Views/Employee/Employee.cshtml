@@ -1,0 +1,690 @@
+﻿@model EmployeeTask.Models.EmployeeMaster
+
+<div class="container mt-5 mb-5">
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white text-center">
+            <h4>@(Model?.Id > 0 ? "Edit Employee Details" : "Add New Employee")</h4>
+        </div>
+
+        <div class="card-body p-4">
+            <form id="employeeForm" method="post" asp-controller="Employee" asp-action="AddEdit" enctype="multipart/form-data">
+
+                <input type="hidden" asp-for="EmployeeCode" />
+                <input type="hidden" asp-for="Id" id="Id" />
+
+                <div class="row g-3">
+                    <!-- First Name -->
+                    <div class="col-md-6">
+                        <label asp-for="FirstName" class="form-label">First Name</label>
+                        <input asp-for="FirstName" class="form-control form-control-sm" placeholder="First Name" required />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="col-md-6">
+                        <label asp-for="LastName" class="form-label">Last Name</label>
+                        <input asp-for="LastName" class="form-control form-control-sm" placeholder="Last Name" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label">Email Address</label>
+                        <input asp-for="Email" class="form-control form-control-sm" placeholder="Email Address" required />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <!-- Mobile -->
+                    <div class="col-md-6">
+                        <label asp-for="MobileNumber" class="form-label">Mobile Number</label>
+                        <input asp-for="MobileNumber" class="form-control form-control-sm" placeholder="Mobile Number" required />
+                        <span asp-validation-for="MobileNumber" id="mobileError" class="text-danger"></span>
+                    </div>
+
+                    <!-- PAN -->
+                    <div class="col-md-6">
+                        <label asp-for="PanNumber" class="form-label">PAN Number</label>
+                        <input asp-for="PanNumber" class="form-control form-control-sm" placeholder="PAN Number" required />
+                        <span asp-validation-for="PanNumber" id="panError" class="text-danger"></span>
+                    </div>
+
+                    <!-- Passport -->
+                    <div class="col-md-6">
+                        <label asp-for="PassportNumber" class="form-label">Passport Number</label>
+                        <input asp-for="PassportNumber" class="form-control form-control-sm" placeholder="Passport Number" required />
+                        <span asp-validation-for="PassportNumber" class="text-danger"></span>
+                    </div>
+
+                    <!-- DOB -->
+                    <div class="col-md-6">
+                        <label asp-for="DateOfBirth" class="form-label">Date of Birth</label>
+                        <input asp-for="DateOfBirth" type="date" class="form-control form-control-sm" required />
+                        <span asp-validation-for="DateOfBirth" id="dobError" class="text-danger"></span>
+                    </div>
+
+                    <!-- DOJ -->
+                    <div class="col-md-6">
+                        <label asp-for="DateOfJoinee" class="form-label">Date of Joining</label>
+                        <input asp-for="DateOfJoinee" type="date" class="form-control form-control-sm" required />
+                        <span asp-validation-for="DateOfJoinee" id="passportError" class="text-danger"></span>
+                    </div>
+
+                    <!-- Country -->
+                    <div class="col-md-4">
+                        <label asp-for="CountryID" class="form-label">Country</label>
+                        <select asp-for="CountryID" class="form-select form-select-sm" id="CountryId" required>
+                            <option value="">--Select Country--</option>
+                        </select>
+                        <span asp-validation-for="CountryID" id="countryError" class="text-danger"></span>
+                    </div>
+
+                    <!-- State -->
+                    <div class="col-md-4">
+                        <label asp-for="StateID" class="form-label">State</label>
+                        <select asp-for="StateID" class="form-select form-select-sm" id="StateId" required>
+                            <option value="">--Select State--</option>
+                        </select>
+                        <span asp-validation-for="StateID" class="text-danger"></span>
+                    </div>
+
+                    <!-- City -->
+                    <div class="col-md-4">
+                        <label asp-for="CityID" class="form-label">City</label>
+                        <select asp-for="CityID" class="form-select form-select-sm" id="CityId" required>
+                            <option value="">--Select City--</option>
+                        </select>
+                        <span asp-validation-for="CityID" class="text-danger"></span>
+                    </div>
+
+                    <!-- Profile Picture -->
+                    <div class="col-md-6">
+                        <label asp-for="ImagePath" class="form-label">Profile Picture</label>
+                        @if (Model != null && !string.IsNullOrEmpty(Model.ProfileImage))
+                        {
+                            <div class="d-flex align-items-center gap-2 mb-2" id="imagePreviewWrapper">
+                                <img id="previewImage" src="@Model.ProfileImage" class="img-thumbnail" style="max-height: 100px;" alt="Profile Image" accept=".jpg,.jpeg,.png" />
+                                <button type="button" id="deleteImageBtn" class="btn btn-sm btn-danger">Delete</button>
+                            </div>
+                        }
+                        else
+                        {
+                            <img id="previewImage" src="#" alt="Image Preview" class="img-thumbnail d-none" style="max-height: 100px;" />
+                        }
+                        <input asp-for="ImagePath" type="file" class="form-control form-control-sm mt-2" accept=".jpg,.jpeg,.png" />
+                        <input type="hidden" name="IsDeleteImage" id="IsDeleteImage" value="false" />
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="col-md-6">
+                        <label class="form-label d-block">Gender</label>
+                        <div class="form-check form-check-inline">
+                            <input asp-for="Gender" class="form-check-input" type="radio" value="1" id="male" required />
+                            <label for="male" class="form-check-label">Male</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input asp-for="Gender" class="form-check-input" type="radio" value="2" id="female" />
+                            <label for="female" class="form-check-label">Female</label>
+                        </div>
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+
+                    <!-- Active -->
+                    <div class="col-md-6">
+                        <div class="form-check mt-4">
+                            <input asp-for="IsActive" type="checkbox" class="form-check-input" id="IsActive" />
+                            <label for="IsActive" class="form-check-label">Active</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-5">
+                    <button id="submitBtn" type="submit" class="btn btn-success px-4 me-2">
+                        @(Model != null && Model.Id != 0 ? "Update" : "Save")
+                    </button>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary px-4">Return to Home</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+            $(document).ready(function () {
+
+                toastr.options = {
+                    "closeButton": true,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "timeOut": "3000"
+                };
+
+            @if (TempData.Peek("Error") != null)
+            {
+               <text>toastr.error(@Html.Raw(Json.Serialize(TempData.Peek("Error"))));</text>
+            }
+
+            //Cascading DropDowns
+                var selectedCountryId = '@ViewBag.SelectedCountryId';
+                var selectedStateId = '@ViewBag.SelectedStateId';
+                var selectedCityId = '@ViewBag.SelectedCityId';
+
+                $.getJSON('/Employee/GetCountries', function (data) {
+                    $('#CountryID').empty().append('<option value="">--Select Country--</option>');
+                    $.each(data, function (i, country) {
+                        $('#CountryId').append($('<option>', {
+                            value: country.countryId,
+                            text: country.countryName,
+                            selected: country.countryId == selectedCountryId
+                        }));
+                    });
+
+                    if (selectedCountryId) {
+                        $.getJSON('/Employee/GetStatesByCountry', { countryId: selectedCountryId }, function (states) {
+                            $('#StateId').empty().append('<option value="">--Select State--</option>');
+                            $.each(states, function (i, state) {
+                                $('#StateId').append($('<option>', {
+                                    value: state.stateId,
+                                    text: state.stateName,
+                                    selected: state.stateId == selectedStateId
+                                }));
+                            });
+                        });
+                    }
+
+                    if (selectedStateId) {
+                        $.getJSON('/Employee/GetCitiesByState', { stateId: selectedStateId }, function (cities) {
+                            $('#CityId').empty().append('<option value="">--Select City--</option>');
+                            $.each(cities, function (i, city) {
+                                $('#CityId').append($('<option>', {
+                                    value: city.cityId,
+                                    text: city.cityName,
+                                    selected: city.cityId == selectedCityId
+                                }));
+                            });
+                        });
+                    }
+                });
+
+                $('#CountryId').on('change blur', function () {
+                    var countryId = $(this).val();
+                    $('#StateId').empty().append('<option value="">--Select State--</option>');
+                    $('#CityId').empty().append('<option value="">--Select City--</option>');
+
+                    if (countryId) {
+                        $.getJSON('/Employee/GetStatesByCountry', { countryId: countryId }, function (data) {
+                            $.each(data, function (i, state) {
+                                $('#StateId').append($('<option>', {
+                                    value: state.stateId,
+                                    text: state.stateName
+                                }));
+                            });
+                        });
+                    }
+
+                    $('#StateId').valid();
+                    $('#CityId').valid();
+                });
+
+                $('#StateId').on('change blur', function () {
+                    var stateId = $(this).val();
+                    $('#CityId').empty().append('<option value="">--Select City--</option>');
+
+                    if (stateId) {
+                        $.getJSON('/Employee/GetCitiesByState', { stateId: stateId }, function (data) {
+                            $.each(data, function (i, city) {
+                                $('#CityId').append($('<option>', {
+                                    value: city.cityId,
+                                    text: city.cityName
+                                }));
+                            });
+                        });
+                    }
+                      $('#StateId').valid();
+                      $('#CityId').valid();
+                });
+
+                $('#CityId').on('change blur', function(){
+                    $('#CityId').valid();
+                });
+
+                $('#employeeForm').on('submit', function(){
+                    $('#CountryId').valid();
+                    $('#StateId').valid();
+                    $('#CityId').valid();
+                });
+
+                //Uppercase for Pan & Passport
+                $('#PanNumber, #PassportNumber').on('blur', function () {
+                    $(this).val($(this).val().toUpperCase());
+                });
+
+                //only numbers as an input
+                $('#MobileNumber').on('input', function () {
+                this.value = this.value.replace(/\D/g, '');
+            });
+
+                //validation for image
+                $('input[name="ImagePath"]').on('change', function () {
+                    var f = this.files[0];
+                        if (!f) {
+                            $('#previewImage').hide();
+                                 return;
+            }
+
+                    var ext = f.name.split('.').pop().toLowerCase();
+
+                    if (['jpg', 'jpeg', 'png'].indexOf(ext) === -1) {
+                        toastr.error("Only JPG/PNG/JPEG allowed.");
+                        $(this).val('');
+                        $('#previewImage').hide();
+                        return;
+                    }
+
+                    if (f.size > 200 * 1024) {
+                        toastr.error("Max size 200KB allowed.");
+                        $(this).val('');
+                        $('#previewImage').hide();
+                        return;
+                    }
+
+                     var reader = new FileReader();
+                     reader.onload = function (e) {
+                $('#previewImage').attr('src', e.target.result).removeClass('d-none').show(); }
+                    reader.readAsDataURL(f);
+                });
+
+                $('#deleteImageBtn').on('click', function () {
+                $('#imagePreviewWrapper').hide();
+                $('#previewImage').attr('src', '#').addClass('d-none');
+                $('#IsDeleteImage').val('true');
+                $('input[name="ImagePath"]').val('');
+                $('#deleteImageBtn').hide();
+                 });
+
+             function validateMOB() {
+                 const mobileInput = $('#MobileNumber');
+                 const mobileError = $('#mobileError');
+                 const mobValue = mobileInput.val().trim();
+                 const mobileRegex = /^[6-9]\d{9}$/;
+                
+                if (!mobValue) {
+                    mobileError.text("Please enter Mobile Number.");
+                    mobileInput.addClass("is-invalid");
+                    return false;
+                }
+                else if(!mobileRegex.test(mobValue))
+                {
+                    mobileError.text("Invalid Mobile Number. Must start with 6-9 and be 10 digits.");
+                    mobileInput.addClass("is-invalid");
+                     return false;
+                }
+                else
+                {
+                    mobileError.text("");
+                    mobileInput.removeClass("is-invalid");
+                    return true;
+                }
+                }
+
+                $('#MobileNumber').on('input', function() {
+                validateMOB();
+                 });
+
+            // Validate on leaving the field
+            $('#MobileNumber').on('blur', function() {
+                setTimeout(() => validateMOB(), 50);
+            });
+
+
+             function validatePAN() {
+                 const panInput = $('#PanNumber');
+                 const panError = $('#panError');
+                 const panValue = panInput.val().trim();
+                 const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+               
+                if (!panValue) {
+                    panError.text("Please enter PAN Number.");
+                    panInput.addClass("is-invalid");
+                    return false;
+                }
+                else if(!panRegex.test(panValue))
+                {
+                    panError.text("Invalid PAN Number. Format should be: AAAAA1234A");
+                    panInput.addClass("is-invalid");
+                     return false;
+                }
+                else
+                {
+                    panError.text("");
+                    panInput.removeClass("is-invalid");
+                    return true;
+                }
+
+                }
+
+                 $('#PanNumber').on('input', function() {
+                validatePAN();
+                 });
+
+            // Validate on leaving the field
+            $('#PanNumber').on('blur', function() {
+                setTimeout(() => validatePAN(), 50);
+            });
+
+            // Validations for passport Number
+            const passportInput = document.getElementById('PassportNumber');
+            const passportError = passportInput.nextElementSibling;
+
+            passportInput.addEventListener('blur', function () {
+                const passportNum = passportInput.value.trim();
+                const passportRegex = /^[A-Za-z][0-9]{7}$/;
+
+                if (!passportRegex.test(passportNum)) {
+                    passportError.textContent = "Invalid Passport Number. Format should be: A1234567";
+                    passportError.classList.add('is-invalid');
+                } else {
+                    passportError.textContent = "";
+                    passportError.classList.remove('is-invalid');
+                }
+            });
+
+            //Validations for Date Of Birth
+            const dobInput = document.getElementById('DateOfBirth');
+            const dobError = document.getElementById('dobError');
+
+            function validateDOB() {
+                const dobInput = $('#DateOfBirth');
+                const dobError = $('#dobError');
+                const dobValue = dobInput.val();
+                let isValid = true;
+
+                if (!dobValue) {
+                    dobError.text("Please select Date of Birth.");
+                    dobInput.addClass("is-invalid");
+                    isValid = false;
+                } 
+                else {
+                    const dob = new Date(dobValue);
+                    const today = new Date();
+                    let age = today.getFullYear() - dob.getFullYear();
+                    const monthDiff = today.getMonth() - dob.getMonth();
+
+                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                        age--;
+                    }
+
+                    if (age < 18) {
+                        dobError.text("Employee must be at least 18 years old.");
+                        dobInput.addClass("is-invalid");
+                        isValid = false;
+                    } else {
+                        dobError.text("");
+                        dobInput.removeClass("is-invalid");
+                    }
+                }
+
+                return isValid;
+            }
+
+            $(document).on('input change blur', '#DateOfBirth', function(){
+                const dobInput = $(this);
+
+                setTimeout(() => validateDOB(dobInput), 50);
+            });
+
+            //Validations for Joining Date
+            function validateDOJ(){
+                const dojInput = $("DateOfJoinee");
+                const dojError = $("dojError");
+                const dobInput = $("DateOfBirth");
+                const dojValue = dojInput.val();
+                const dobValue = dobInput.val();
+
+                let isvalid = true;
+
+                if (!dojValue){
+                    dojError.text("Please select Date of Joinee.");
+                    dojInput.addClass("is-invalid");
+                   return false;
+                }
+
+                const doj = new Date(dojValue);
+                const today = new Date();
+                today.setHours(0,0,0,0);
+
+                if(doj >= today)
+                {
+                    dojError.text("Date of Joinee cannot be today or a future date.");
+                     dojInput.addClass("is-invalid");
+                     return false;
+                }
+
+                if(dobValue)
+                {
+                    const dob = new Date(dobValue);
+                    
+                    if(doj <= dob)
+                    {
+                        dojError.text("Date of Joinee must be after Date of Birth.");
+                          dojInput.addClass("is-invalid");
+                          return false;
+                    }
+
+                       let ageDiff = doj.getFullYear() - dob.getFullYear();
+                       let monthDiff = doj.getMonth() - dob.getMonth();
+                       let dayDiff = doj.getDate() - dob.getDate();
+
+            // Adjust for months/days
+            if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+                ageDiff--;
+            }
+
+            if (ageDiff < 18) {
+                dojError.text("Date of Joinee must be at least 18 years after Date of Birth.");
+                dojInput.addClass("is-invalid");
+                return false;
+            }
+                }
+
+                dojError.text("");
+                dojInput.removeClass("is-invalid");
+                return isvalid;
+            }
+
+            $(document).on('input change blur', '#DateOfJoinee', validateDOJ);
+
+
+            $("#employeeForm input, #employeeForm select").on('blur change', function () {
+                $(this).valid(); });
+
+
+            //submit button func
+                $("#submitBtn").click(function (e){
+                    e.preventDefault();
+
+                    let isvalid = true;
+                    let employeeId = $("#Id").val();
+                    let mobile = $("#MobileNumber").val();
+                    let pan = $("#PanNumber").val();
+                    let passportNumber = $("#PassportNumber").val();
+                    let dob = new Date($("#DateOfBirth").val());
+                    let doj = new Date($("#DateOfJoinee").val());
+                    let age = new Date().getFullYear() - dob.getFullYear();
+                    let chckDoj = new Date(doj).getFullYear() - new Date(dob).getFullYear();
+                    let ageDiff = doj.getFullYear() - dob.getFullYear();
+                    let monthDiff = doj.getMonth() - dob.getMonth();
+                    let dayDiff = doj.getDate() - dob.getDate();
+                    let today = new Date();
+                        today.setHours(0,0,0,0);
+
+                    let countryId = $("#CountryId").val();
+                    let stateId = $("#StateId").val();
+                    let cityId = $("#CityId").val();
+
+                    const mobileRegex = /^[6-9]\d{9}$/;
+                    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+                    const passportRegex = /^[A-Za-z][0-9]{7}$/;
+
+                     toastr.clear();
+
+                    let isValid = true;
+                    let hasEmpty = false;
+
+                 $("#employeeForm").find("input[required], select[required], textarea[required]")
+                .each(function () {
+                  const type = $(this).attr("type");
+                  const name = $(this).attr("name");
+
+                  if (type === "radio") {
+                  if ($(`input[name='${name}']:checked`).length === 0) {
+                          hasEmpty = true;
+                     $(this).closest(".col-md-6").find("label.form-label").addClass("text-danger");
+                     } 
+                else {
+                $(this).closest(".col-md-6").find("label.form-label").removeClass("text-danger");
+                        }
+                    }
+               else {
+                      const value = $(this).val()?.trim();
+                        if (!value) {
+                            hasEmpty = true;
+                            $(this).addClass("is-invalid");
+                        } else {
+                            $(this).removeClass("is-invalid");
+                        }
+                    }
+                });
+
+                     if (hasEmpty) {
+                         toastr.error("Please fill in all required fields.");
+                         return;
+                        }
+
+                     if (!validateDOB()) {
+                        isvalid = false;
+                        toastr.error("Please enter a valid Date of Birth.");
+                        }
+
+                     //cascading dropdown validations
+                    if (!countryId || countryId == 0)
+                    {
+                        isvalid = false;
+                        toastr.error("Please select a valid country.");
+                        const countryInput = document.getElementById('CountryId');
+                        const countryError = countryInput.nextElementSibling;
+
+                        countryError.textContent = "Please select a valid country.";
+                    }
+
+                    if (!stateId || stateId == 0)
+                    {
+                        isvalid = false;
+                        toastr.error("Please select a valid state.");
+                    }
+
+                    if (!cityId || cityId == 0)
+                    {
+                        isvalid = false;
+                       toastr.error("Please select a valid city.");
+                    }
+
+                    const mobileInput = document.getElementById('MobileNumber');
+                    const mobileError = document.getElementById('mobileError');
+
+                 //input business validations
+                    if (!mobileRegex.test(mobile)){
+                        isvalid = false;
+                        mobileError.textContent = "Invalid Mobile Number";
+                        toastr.error("Invalid Mobile Number.");
+                    }
+
+                    if (!panRegex.test(pan))
+                    {
+                        isvalid = false;
+                        toastr.error("Invalid Pan Number.");
+                    }
+
+                    if (!passportRegex.test(passportNumber))
+                    {
+                        isvalid = false;
+                        toastr.error("Invalid Passport Number.");
+                    }
+
+                    if(isNaN(dob) || age < 18)
+                    {
+                        isvalid = false;
+                        toastr.error("Employee must be at least 18 years old");
+
+                    }
+
+                    if (isNaN(doj))
+                    {
+                        isvalid = false;
+                        toastr.error("Please enter a valid Date of Joinee");
+                    }
+                    else
+                    {
+                        if (doj >= today)
+                        {
+                            isvalid = false;
+                            toastr.error("Date of Joinee cannot be today or a future date");
+                        }
+
+                        if (doj <= dob)
+                        {
+                            isvalid = false;
+                            toastr.error("Date of Joinee must be after Date of Birth");
+                        }
+
+                        if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+                             ageDiff--;
+                        }
+
+                        if (ageDiff < 18) {
+                            isvalid = false;
+                            toastr.error("Date of Joinee must be at least 18 years after Date of Birth.");
+                        }
+                    }
+
+                    if (!$("#employeeForm").valid()){
+                        console.log(false);
+                        return;
+                    }
+
+                    //Ajax for Datatable view
+                    if(isvalid)
+                    {
+                         $.ajax({
+                            url: '/Employee/AddEdit',
+                            method: 'POST',
+                            data: new FormData($("#employeeForm")[0]),
+                            processData: false,
+                            contentType: false,
+                            success: function (res) {
+                            toastr.clear();
+
+                            if(res.success){
+                                toastr.success(res.message);
+                                setTimeout(function(){
+                                    window.location.href = '/Home/Index';
+                                }, 1000);
+                            } 
+                            else {
+                                toastr.error(res.message);
+                            }
+                            },
+                            error: function (err) {
+                                toastr.error("Something went wrong!");
+                            }
+                         });
+                    }
+                });
+            });
+    </script>
+}
+
+
+

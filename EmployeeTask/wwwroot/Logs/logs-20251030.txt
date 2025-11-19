@@ -1,0 +1,9 @@
+2025-10-30 13:54:10.347 +05:30 [ERR] An error occurred while adding/updating employee with Id 24
+System.DivideByZeroException: Attempted to divide by zero.
+   at EmployeeTask.Controllers.EmployeeController.AddEdit(EmployeeMaster obj, IFormFile file) in C:\Users\Client\Desktop\Neosoft_Pradeep_Kamble_14-10-25\EmployeeTask\EmployeeTask\Controllers\EmployeeController.cs:line 195
+2025-10-30 15:36:05.350 +05:30 [ERR] An error occurred while adding/updating employee with Id 0
+System.DivideByZeroException: Attempted to divide by zero.
+   at EmployeeTask.Controllers.EmployeeController.AddEdit(EmployeeMaster obj, IFormFile file)
+2025-10-30 16:53:33.731 +05:30 [ERR] An error occurred while adding/updating employee with Id 24
+System.DivideByZeroException: Attempted to divide by zero.
+   at EmployeeTask.Controllers.EmployeeController.AddEdit(EmployeeMaster obj, IFormFile file)

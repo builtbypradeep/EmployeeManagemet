@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewData["Title"] = "Employee List";
+}
+
+<h2>Employee List</h2>
+
+<a class="btn btn-primary mb-3"  asp-controller="Employee" asp-action="Employee">Add New Employee</a>
+
+<table id="employeeTable" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Country</th>
+            <th>State</th>
+            <th>City</th>
+            <th>PAN No</th>
+            <th>Passport No</th>
+            <th>Gender</th>
+            <th>Active</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#employeeTable').DataTable({
+                "ajax": "/Employee/GetEmployees",
+                "columns": [
+                    { "data": "email" },
+                    { "data": "country" },
+                    { "data": "state" },
+                    { "data": "city" },
+                    { "data": "panNo" },
+                    { "data": "passportNo" },
+                    { "data": "gender" },
+                    { "data": "isActive" },
+                    {
+                        "data": "profileImage",
+                        "render": function (data) {
+                            return data
+                                ? `<img src="${data}" width="50" height="50" class="rounded" />`
+                                : "No Image";
+                        },
+                        "orderable": false
+                    },
+                    {
+                        "data": null,
+                        "render": function (data, type, row) {
+                            return `
+                                <a href="/Employee/AddEdit/${row.rowId}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-fill"></i> Edit</a>
+                                <button class="btn btn-sm btn-danger deleteEmployee"  data-id="${row.rowId}"><i class="bi bi-trash-fill"></i>Delete</button>`;
+                        },
+                        "orderable": false
+                    }
+                ]
+            });
+
+            // Delete Handler
+            $('#employeeTable').on('click', '.deleteEmployee', function () {
+                var employeeId = $(this).data('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to delete this employee!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/Employee/DeleteEmployee',
+                            type: 'POST',
+                            data: { id: employeeId },
+                            success: function (res) {
+                                if (res.success) {
+                                    Swal.fire('Deleted!', 'Employee has been deleted.', 'success');
+                                    $('#employeeTable').DataTable().ajax.reload();
+                                } else {
+                                    Swal.fire('Error!', res.message, 'error');
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

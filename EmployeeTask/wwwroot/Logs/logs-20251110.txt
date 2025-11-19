@@ -1,0 +1,6 @@
+2025-11-10 16:30:39.919 +05:30 [ERR] An error occurred while adding/updating employee with Id 24
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at EmployeeTask.Controllers.EmployeeController.AddEdit(EmployeeMaster obj, IFormFile file)
+2025-11-10 16:31:14.835 +05:30 [ERR] An error occurred while adding/updating employee with Id 24
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at EmployeeTask.Controllers.EmployeeController.AddEdit(EmployeeMaster obj, IFormFile file)
